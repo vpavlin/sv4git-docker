@@ -1,10 +1,12 @@
-FROM golang:latest
+FROM registry.access.redhat.com/ubi9
 
 WORKDIR /opt/sv4git
 
-RUN curl https://api.github.com/repos/bvieira/sv4git/releases/latest | grep linux_amd64 | sed -n 's/.*browser_download_url": "\(.*\)"/\1/p' | xargs curl -L -O &&\
+RUN URL=$(curl https://api.github.com/repos/bvieira/sv4git/releases/latest | grep linux_amd64 | sed -n 's/.*browser_download_url": "\(.*\)"/\1/p') &&\
+    curl -L -O ${URL} &&\
     tar xzf * &&\
-    rm --f *.gz
+    rm --f *.gz &&\
+    dnf -y install git
 
 WORKDIR /opt/sv4git/repo
 
